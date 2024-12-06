@@ -83,8 +83,8 @@ function AppContent() {
   };
 
   return (
-    <div className="app-container">
-      <main className="app-content">
+    <div className="mobile-container">
+      <div className="page-content">
         <Routes>
           <Route
             path="/"
@@ -125,57 +125,57 @@ function AppContent() {
             }
           />
         </Routes>
-      </main>
+      </div>
 
-      <nav className="app-nav">
-        <div className="nav-container">
-          <div className="nav-items">
-            <button
-              onClick={() => navigate('/expenses')}
-              className={`nav-item ${location.pathname === '/expenses' ? 'active' : ''}`}
-            >
-              <DollarSign className="w-6 h-6" />
-              <span className="text-xs mt-1">Expenses</span>
-            </button>
+      <div className="nav-wrapper">
+        <nav className="bottom-nav">
+          <button
+            onClick={() => navigate('/expenses')}
+            className={`nav-button ${location.pathname === '/expenses' ? 'active' : ''}`}
+          >
+            <DollarSign className="nav-icon" />
+            <span className="nav-label">Expenses</span>
+          </button>
 
-            <button
-              onClick={() => {
-                if (location.pathname === '/') {
-                  setShowAddTransaction(true);
-                } else {
-                  navigate('/');
-                }
-              }}
-              className={location.pathname === '/' ? 'nav-item-center' : 'nav-item'}
-            >
-              {location.pathname === '/' ? (
-                <div className="nav-item-center-button">
-                  <Plus className="w-6 h-6 text-white" />
-                </div>
-              ) : (
-                <>
-                  <Home className="w-6 h-6" />
-                  <span className="text-xs mt-1">Home</span>
-                </>
-              )}
-            </button>
+          <button
+            onClick={() => {
+              if (location.pathname === '/') {
+                setShowAddTransaction(true);
+              } else {
+                navigate('/');
+              }
+            }}
+            className={`nav-button ${location.pathname === '/' ? 'add-button' : ''}`}
+          >
+            {location.pathname === '/' ? (
+              <div className="add-transaction-button">
+                <Plus className="nav-icon" />
+              </div>
+            ) : (
+              <>
+                <Home className="nav-icon" />
+                <span className="nav-label">Home</span>
+              </>
+            )}
+          </button>
 
-            <button
-              onClick={() => navigate('/settings')}
-              className={`nav-item ${location.pathname === '/settings' ? 'active' : ''}`}
-            >
-              <User className="w-6 h-6" />
-              <span className="text-xs mt-1">Profile</span>
-            </button>
-          </div>
-        </div>
-      </nav>
+          <button
+            onClick={() => navigate('/settings')}
+            className={`nav-button ${location.pathname === '/settings' ? 'active' : ''}`}
+          >
+            <User className="nav-icon" />
+            <span className="nav-label">Profile</span>
+          </button>
+        </nav>
+      </div>
 
       {showAddTransaction && (
-        <MoneyInput
-          onClose={() => setShowAddTransaction(false)}
-          onSubmit={handleAddTransaction}
-        />
+        <div className="modal-wrapper">
+          <MoneyInput
+            onClose={() => setShowAddTransaction(false)}
+            onSubmit={handleAddTransaction}
+          />
+        </div>
       )}
     </div>
   );

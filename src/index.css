@@ -1,0 +1,179 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@layer base {
+  :root {
+    --safe-area-inset-top: env(safe-area-inset-top, 0px);
+    --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  html, body {
+    @apply h-full;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    @apply bg-gray-950 text-gray-100 antialiased;
+    height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+}
+
+@layer components {
+  .app-container {
+    @apply flex flex-col;
+    min-height: 100vh;
+    padding-bottom: calc(4.5rem + var(--safe-area-inset-bottom));
+    position: relative;
+  }
+
+  .app-content {
+    @apply flex-1 relative;
+    padding-top: max(1rem, var(--safe-area-inset-top));
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .app-nav {
+    @apply fixed bottom-0 left-0 right-0 bg-gray-800/50 backdrop-blur-md border-t border-gray-700/50 z-50;
+    padding-bottom: var(--safe-area-inset-bottom);
+  }
+
+  /* Desktop styles for nav */
+  @media (min-width: 768px) {
+    .app-nav {
+      background-color: rgba(31, 41, 55, 0.8);
+      max-width: 600px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-radius: 1rem 1rem 0 0;
+      margin-bottom: 1rem;
+    }
+  }
+
+  .nav-container {
+    @apply w-full mx-auto px-4;
+  }
+
+  @media (min-width: 768px) {
+    .nav-container {
+      max-width: 600px;
+    }
+  }
+
+  .nav-items {
+    @apply flex justify-between items-center;
+    height: 4.5rem;
+  }
+
+  .nav-item {
+    @apply flex flex-col items-center justify-center px-6 py-2 text-gray-400 hover:text-purple-500 transition-colors duration-200;
+    min-width: 4rem;
+  }
+
+  @media (min-width: 768px) {
+    .nav-item {
+      padding: 0.75rem 2rem;
+    }
+  }
+
+  .nav-item.active {
+    @apply text-purple-500;
+  }
+
+  .nav-item-center {
+    @apply relative -mt-8;
+  }
+
+  .nav-item-center-button {
+    @apply bg-gradient-to-r from-purple-600 to-indigo-600 p-4 rounded-full 
+           shadow-lg shadow-purple-500/25;
+  }
+
+  .card {
+    @apply bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-2xl shadow-xl;
+  }
+
+  .money-input-modal {
+    @apply fixed inset-x-0 bottom-0 z-50;
+    padding-bottom: var(--safe-area-inset-bottom);
+  }
+
+  .money-input-content {
+    @apply bg-gray-800/95 backdrop-blur-md rounded-t-3xl pt-6 pb-8 px-4 
+           border-t border-gray-700/50 shadow-xl;
+    animation: slide-up 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .home-content {
+    @apply flex flex-col px-6;
+    min-height: calc(100vh - 4.5rem - var(--safe-area-inset-bottom));
+    padding-bottom: 2rem;
+  }
+
+  .welcome-section {
+    @apply pt-4 pb-6;
+  }
+
+  .budget-section {
+    @apply text-center mb-8;
+  }
+
+  .budget-title {
+    @apply text-2xl font-medium text-gray-300 mb-4;
+  }
+
+  .budget-amount {
+    @apply text-5xl font-bold text-white;
+  }
+
+  .summary-section {
+    @apply flex-1 flex flex-col;
+    margin-bottom: 1rem;
+  }
+
+  .summary-title {
+    @apply text-xl font-medium text-gray-300 mb-6 text-center;
+  }
+
+  .btn-primary {
+    @apply bg-gradient-to-r from-purple-600 to-indigo-600 
+           text-white font-medium rounded-xl px-4 py-2
+           hover:from-purple-500 hover:to-indigo-500
+           active:from-purple-700 active:to-indigo-700
+           disabled:opacity-50 disabled:cursor-not-allowed
+           transition-all duration-200;
+  }
+
+  .btn-secondary {
+    @apply bg-gray-800 text-gray-300 font-medium rounded-xl px-4 py-2
+           hover:bg-gray-700 active:bg-gray-900
+           disabled:opacity-50 disabled:cursor-not-allowed
+           transition-all duration-200;
+  }
+
+  .input {
+    @apply w-full bg-gray-700 border border-gray-600 rounded-xl px-4 py-2
+           text-white placeholder-gray-400
+           focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent
+           transition-all duration-200;
+  }
+}
+
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}

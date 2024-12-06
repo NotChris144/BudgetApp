@@ -24,27 +24,33 @@
 
 @layer components {
   .mobile-container {
-    @apply h-full flex flex-col relative;
-    height: 100dvh;
+    @apply h-full flex flex-col;
+    min-height: 100vh;
+    min-height: 100dvh;
+    max-height: 100vh;
+    max-height: 100dvh;
   }
 
   .page-content {
     @apply flex-1 overflow-auto;
-    padding-bottom: 0;
+    height: calc(100vh - 72px);
+    height: calc(100dvh - 72px);
+    padding-bottom: 16px;
   }
 
   .nav-wrapper {
-    @apply relative z-50;
-    background: rgba(31, 41, 55, 0.5);
+    @apply sticky bottom-0 left-0 right-0 z-50;
+    height: 72px;
+    background: rgba(31, 41, 55, 0.95);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     border-top: 1px solid rgba(55, 65, 81, 0.5);
-    padding-bottom: env(safe-area-inset-bottom, 0px);
+    margin-bottom: env(safe-area-inset-bottom, 0px);
   }
 
   .bottom-nav {
     @apply flex items-center justify-between px-6;
-    height: 72px;
+    height: 100%;
   }
 
   .nav-button {

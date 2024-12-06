@@ -47,7 +47,7 @@
 @layer components {
   .app-container {
     @apply flex flex-col;
-    min-height: 100%;
+    min-height: 100vh;
     height: 100dvh;
     position: relative;
     display: flex;
@@ -60,13 +60,11 @@
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
-    padding-bottom: calc(4.5rem + env(safe-area-inset-bottom, 0px));
+    padding-bottom: 4.5rem;
   }
 
   .app-nav {
     @apply fixed bottom-0 left-0 right-0 bg-gray-800/50 backdrop-blur-md border-t border-gray-700/50 z-50;
-    padding-bottom: env(safe-area-inset-bottom, 0px);
-    margin-bottom: 0;
   }
 
   /* Desktop styles for nav */
@@ -82,8 +80,9 @@
   }
 
   .nav-container {
+    @apply w-full;
     height: 4.5rem;
-    width: 100%;
+    padding-bottom: env(safe-area-inset-bottom);
   }
 
   @media (min-width: 768px) {
@@ -93,9 +92,7 @@
   }
 
   .nav-items {
-    @apply flex justify-between items-center;
-    height: 100%;
-    padding: 0 1rem;
+    @apply flex justify-between items-center h-full px-4;
   }
 
   .nav-item {
@@ -129,7 +126,7 @@
 
   .money-input-modal {
     @apply fixed inset-x-0 bottom-0 z-[60];
-    padding-bottom: env(safe-area-inset-bottom, 0px);
+    padding-bottom: env(safe-area-inset-bottom);
   }
 
   .money-input-content {

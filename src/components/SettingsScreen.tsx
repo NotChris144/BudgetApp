@@ -26,25 +26,23 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const parsedIncome = parseFloat(newIncome) || 0;
-    updateSettings(parsedIncome, newUsername);
   };
 
   const handleIncomeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
     const value = e.target.value;
     if (value === '' || /^\d+(\.\d*)?$/.test(value)) {
       setNewIncome(value);
+      const parsedIncome = parseFloat(value) || 0;
+      updateSettings(parsedIncome, newUsername);
     }
   };
 
   const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
     const value = e.target.value;
     setNewUsername(value);
-  };
-
-  const handleBlur = () => {
-    const parsedIncome = parseFloat(newIncome) || 0;
-    updateSettings(parsedIncome, newUsername);
+    updateSettings(parseFloat(newIncome) || 0, value);
   };
 
   const parsedIncome = parseFloat(newIncome) || 0;
@@ -55,7 +53,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({
   return (
     <div className="p-4 bg-gray-900 min-h-screen">
       <h1 className="text-2xl font-bold mb-4 text-white">Settings</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4" autoComplete="off">
         <div>
           <label htmlFor="username" className="block text-sm font-medium text-gray-300">
             Your Name
@@ -65,9 +63,9 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({
             id="username"
             value={newUsername}
             onChange={handleUsernameChange}
-            onBlur={handleBlur}
             className="mt-1 block w-full p-2 border rounded-md bg-gray-700 text-white"
             placeholder="Enter your name"
+            autoComplete="off"
           />
         </div>
         <div>
@@ -79,9 +77,9 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({
             id="income"
             value={newIncome}
             onChange={handleIncomeChange}
-            onBlur={handleBlur}
             className="mt-1 block w-full p-2 border rounded-md bg-gray-700 text-white"
             placeholder="Enter your monthly income"
+            autoComplete="off"
           />
         </div>
         <div>

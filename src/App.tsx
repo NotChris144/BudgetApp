@@ -6,6 +6,7 @@ import SettingsScreen from './components/SettingsScreen';
 import MoneyInput from './components/MoneyInput';
 import { AppData, Transaction, Expense } from './types';
 import { v4 as uuidv4 } from 'uuid';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 const initialAppData: AppData = {
   expenses: [],
@@ -120,89 +121,64 @@ function App() {
   }, [addTransaction]);
 
   return (
-    <div className="app-container">
-      <div className="app-content">
-        <div className="h-full">
-          {activeScreen === 'expenses' && (
-            <ExpensesScreen
-              expenses={appData.expenses}
-              income={appData.income}
-              addExpense={addExpense}
-              removeExpense={removeExpense}
-            />
-          )}
-          {activeScreen === 'home' && (
-            <HomeScreen
-              dailyBudget={appData.dailyBudget}
-              transactions={appData.transactions}
-              addTransaction={addTransaction}
-              removeTransaction={removeTransaction}
-              username={appData.username}
-              currentDate={virtualDate}
-              setCurrentDate={setVirtualDate}
-              onAddTransaction={() => setShowAddTransaction(true)}
-            />
-          )}
-          {activeScreen === 'settings' && (
-            <SettingsScreen
-              income={appData.income}
-              dailyBudget={appData.dailyBudget}
-              updateSettings={updateSettings}
-              totalExpenses={appData.expenses.reduce((sum, exp) => sum + exp.amount, 0)}
-              username={appData.username}
-            />
-          )}
+    <Router>
+      <div className="app-container">
+        <div className="app-content">
+          <Routes>
+            <Route path="/" element={<HomeScreen />} />
+            <Route path="/stats" element={<ExpensesScreen expenses={appData.expenses} income={appData.income} addExpense={addExpense} removeExpense={removeExpense} />} />
+            <Route path="/settings" element={<SettingsScreen income={appData.income} dailyBudget={appData.dailyBudget} updateSettings={updateSettings} totalExpenses={appData.expenses.reduce((sum, exp) => sum + exp.amount, 0)} username={appData.username} />} />
+          </Routes>
         </div>
-      </div>
-
-      <nav className="app-nav">
-        <div className="max-w-md mx-auto px-4">
-          <div className="flex justify-between items-center h-16">
-            <button
-              onClick={() => setActiveScreen('expenses')}
-              className={`nav-item ${activeScreen === 'expenses' ? 'active' : ''}`}
-            >
-              <DollarSign className="w-6 h-6" />
-              <span className="text-xs mt-1">Expenses</span>
-            </button>
-
-            {activeScreen === 'home' ? (
+        <nav className="app-nav">
+          <div className="max-w-md mx-auto px-4">
+            <div className="flex justify-between items-center h-16">
               <button
-                onClick={() => setShowAddTransaction(true)}
-                className="nav-item-center"
+                onClick={() => setActiveScreen('expenses')}
+                className={`nav-item ${activeScreen === 'expenses' ? 'active' : ''}`}
               >
-                <div className="nav-item-center-button">
-                  <Plus className="w-6 h-6 text-white" />
-                </div>
+                <DollarSign className="w-6 h-6" />
+                <span className="text-xs mt-1">Expenses</span>
               </button>
-            ) : (
-              <button
-                onClick={() => setActiveScreen('home')}
-                className={`nav-item ${activeScreen === 'home' ? 'active' : ''}`}
-              >
-                <Home className="w-6 h-6" />
-                <span className="text-xs mt-1">Home</span>
-              </button>
-            )}
 
-            <button
-              onClick={() => setActiveScreen('settings')}
-              className={`nav-item ${activeScreen === 'settings' ? 'active' : ''}`}
-            >
-              <User className="w-6 h-6" />
-              <span className="text-xs mt-1">Profile</span>
-            </button>
+              {activeScreen === 'home' ? (
+                <button
+                  onClick={() => setShowAddTransaction(true)}
+                  className="nav-item-center"
+                >
+                  <div className="nav-item-center-button">
+                    <Plus className="w-6 h-6 text-white" />
+                  </div>
+                </button>
+              ) : (
+                <button
+                  onClick={() => setActiveScreen('home')}
+                  className={`nav-item ${activeScreen === 'home' ? 'active' : ''}`}
+                >
+                  <Home className="w-6 h-6" />
+                  <span className="text-xs mt-1">Home</span>
+                </button>
+              )}
+
+              <button
+                onClick={() => setActiveScreen('settings')}
+                className={`nav-item ${activeScreen === 'settings' ? 'active' : ''}`}
+              >
+                <User className="w-6 h-6" />
+                <span className="text-xs mt-1">Profile</span>
+              </button>
+            </div>
           </div>
-        </div>
-      </nav>
+        </nav>
 
-      {showAddTransaction && (
-        <MoneyInput
-          onClose={() => setShowAddTransaction(false)}
-          onSubmit={handleAddTransaction}
-        />
-      )}
-    </div>
+        {showAddTransaction && (
+          <MoneyInput
+            onClose={() => setShowAddTransaction(false)}
+            onSubmit={handleAddTransaction}
+          />
+        )}
+      </div>
+    </Router>
   );
 }
 

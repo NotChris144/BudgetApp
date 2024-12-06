@@ -52,6 +52,7 @@
     position: relative;
     display: flex;
     flex-direction: column;
+    background-color: #000;
   }
 
   .app-content {
@@ -60,35 +61,24 @@
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
-    padding-bottom: 4.5rem;
+    margin-bottom: 4.5rem;
   }
 
   .app-nav {
-    @apply fixed bottom-0 left-0 right-0 bg-gray-800/50 backdrop-blur-md border-t border-gray-700/50 z-50;
-  }
-
-  /* Desktop styles for nav */
-  @media (min-width: 768px) {
-    .app-nav {
-      background-color: rgba(31, 41, 55, 0.8);
-      max-width: 600px;
-      left: 50%;
-      transform: translateX(-50%);
-      border-radius: 1rem 1rem 0 0;
-      margin-bottom: 1rem;
-    }
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(31, 41, 55, 0.5);
+    backdrop-filter: blur(8px);
+    border-top: 1px solid rgba(55, 65, 81, 0.5);
+    z-index: 50;
+    height: calc(4.5rem + env(safe-area-inset-bottom));
   }
 
   .nav-container {
-    @apply w-full;
     height: 4.5rem;
-    padding-bottom: env(safe-area-inset-bottom);
-  }
-
-  @media (min-width: 768px) {
-    .nav-container {
-      max-width: 600px;
-    }
+    width: 100%;
   }
 
   .nav-items {
@@ -125,7 +115,11 @@
   }
 
   .money-input-modal {
-    @apply fixed inset-x-0 bottom-0 z-[60];
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 60;
     padding-bottom: env(safe-area-inset-bottom);
   }
 

@@ -47,25 +47,26 @@
 @layer components {
   .app-container {
     @apply flex flex-col;
-    height: 100%;
-    overflow: hidden;
+    min-height: 100%;
+    height: 100dvh;
     position: relative;
+    display: flex;
+    flex-direction: column;
   }
 
   .app-content {
-    @apply flex-1 relative;
-    height: calc(100% - 4.5rem);
+    @apply flex-1;
     overflow-y: auto;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
-    padding-bottom: calc(var(--safe-area-inset-bottom) + 1rem);
+    padding-bottom: calc(4.5rem + env(safe-area-inset-bottom, 0px));
   }
 
   .app-nav {
     @apply fixed bottom-0 left-0 right-0 bg-gray-800/50 backdrop-blur-md border-t border-gray-700/50 z-50;
-    height: 4.5rem;
-    padding-bottom: var(--safe-area-inset-bottom);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    margin-bottom: 0;
   }
 
   /* Desktop styles for nav */
@@ -81,7 +82,8 @@
   }
 
   .nav-container {
-    @apply w-full mx-auto px-4;
+    height: 4.5rem;
+    width: 100%;
   }
 
   @media (min-width: 768px) {
@@ -91,7 +93,9 @@
   }
 
   .nav-items {
-    @apply flex justify-between items-center h-full;
+    @apply flex justify-between items-center;
+    height: 100%;
+    padding: 0 1rem;
   }
 
   .nav-item {
@@ -124,8 +128,8 @@
   }
 
   .money-input-modal {
-    @apply fixed inset-x-0 bottom-0 z-50;
-    padding-bottom: var(--safe-area-inset-bottom);
+    @apply fixed inset-x-0 bottom-0 z-[60];
+    padding-bottom: env(safe-area-inset-bottom, 0px);
   }
 
   .money-input-content {

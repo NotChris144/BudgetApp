@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { DollarSign, User, Home, Plus } from 'lucide-react';
 import ExpensesScreen from './components/ExpensesScreen';
 import HomeScreen from './components/HomeScreen';
@@ -18,6 +18,7 @@ const initialAppData: AppData = {
 
 function AppContent() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [showAddTransaction, setShowAddTransaction] = useState(false);
   const [appData, setAppData] = useState<AppData>(initialAppData);
   const [virtualDate, setVirtualDate] = useState(new Date());
@@ -83,7 +84,7 @@ function AppContent() {
 
   return (
     <div className="app-container">
-      <div className="app-content">
+      <main className="app-content">
         <Routes>
           <Route
             path="/"
@@ -124,14 +125,14 @@ function AppContent() {
             }
           />
         </Routes>
-      </div>
+      </main>
 
       <nav className="app-nav">
         <div className="nav-container">
           <div className="nav-items">
             <button
               onClick={() => navigate('/expenses')}
-              className="nav-item"
+              className={`nav-item ${location.pathname === '/expenses' ? 'active' : ''}`}
             >
               <DollarSign className="w-6 h-6" />
               <span className="text-xs mt-1">Expenses</span>
@@ -161,7 +162,7 @@ function AppContent() {
 
             <button
               onClick={() => navigate('/settings')}
-              className="nav-item"
+              className={`nav-item ${location.pathname === '/settings' ? 'active' : ''}`}
             >
               <User className="w-6 h-6" />
               <span className="text-xs mt-1">Profile</span>

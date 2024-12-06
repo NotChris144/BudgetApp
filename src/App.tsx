@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import { DollarSign, User, Home, Plus } from 'lucide-react';
 import ExpensesScreen from './components/ExpensesScreen';
 import HomeScreen from './components/HomeScreen';
@@ -6,7 +7,6 @@ import SettingsScreen from './components/SettingsScreen';
 import MoneyInput from './components/MoneyInput';
 import { AppData, Transaction, Expense } from './types';
 import { v4 as uuidv4 } from 'uuid';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 const initialAppData: AppData = {
   expenses: [],
@@ -16,168 +16,174 @@ const initialAppData: AppData = {
   username: 'User',
 };
 
-function App() {
-  const [activeScreen, setActiveScreen] = useState<'expenses' | 'home' | 'settings'>('home');
-  const [appData, setAppData] = useState<AppData>(initialAppData);
+function AppContent() {
+  const navigate = useNavigate();
   const [showAddTransaction, setShowAddTransaction] = useState(false);
+  const [appData, setAppData] = useState<AppData>(initialAppData);
   const [virtualDate, setVirtualDate] = useState(new Date());
 
   useEffect(() => {
-    const storedData = localStorage.getItem('budgetAppData');
-    if (storedData) {
-      setAppData(JSON.parse(storedData));
+    const savedData = localStorage.getItem('appData');
+    if (savedData) {
+      setAppData(JSON.parse(savedData));
     }
   }, []);
 
-  const saveDataLocally = useCallback((data: AppData) => {
-    localStorage.setItem('budgetAppData', JSON.stringify(data));
-  }, []);
+  useEffect(() => {
+    localStorage.setItem('appData', JSON.stringify(appData));
+  }, [appData]);
 
-  const calculateDailyBudget = useCallback((income: number, expenses: Expense[]) => {
-    const totalExpenses = expenses.reduce((sum, exp) => sum + exp.amount, 0);
-    const availableAmount = income - totalExpenses;
-    const dailyAmountWithoutBuffer = availableAmount / 30;
-    const bufferAmount = dailyAmountWithoutBuffer * 0.2;
-    const dailyBudgetWithBuffer = Math.max(dailyAmountWithoutBuffer - bufferAmount, 0);
-    return Math.floor(dailyBudgetWithBuffer);
-  }, []);
-
-  const addExpense = useCallback((expense: Omit<Expense, 'id'>) => {
-    setAppData((prevData) => {
-      const newExpense = { ...expense, id: uuidv4() };
-      const newExpenses = [...prevData.expenses, newExpense];
-      const newDailyBudget = calculateDailyBudget(prevData.income, newExpenses);
-      const newData = {
-        ...prevData,
-        expenses: newExpenses,
-        dailyBudget: newDailyBudget,
-      };
-      saveDataLocally(newData);
-      return newData;
-    });
-  }, [calculateDailyBudget, saveDataLocally]);
-
-  const removeExpense = useCallback((id: string) => {
-    setAppData((prevData) => {
-      const newExpenses = prevData.expenses.filter(expense => expense.id !== id);
-      const newDailyBudget = calculateDailyBudget(prevData.income, newExpenses);
-      const newData = {
-        ...prevData,
-        expenses: newExpenses,
-        dailyBudget: newDailyBudget,
-      };
-      saveDataLocally(newData);
-      return newData;
-    });
-  }, [calculateDailyBudget, saveDataLocally]);
-
-  const addTransaction = useCallback((amount: number) => {
-    const transaction: Transaction = {
-      date: virtualDate.toISOString().split('T')[0],
+  const addTransaction = (amount: number) => {
+    const newTransaction: Transaction = {
+      id: uuidv4(),
       amount,
-      category: 'Quick Entry',
+      date: virtualDate.toISOString(),
     };
-    
-    setAppData((prevData) => {
-      const newData = {
-        ...prevData,
-        transactions: [...prevData.transactions, transaction],
-      };
-      saveDataLocally(newData);
-      return newData;
-    });
-    setShowAddTransaction(false);
-  }, [virtualDate, saveDataLocally]);
 
-  const removeTransaction = useCallback((index: number) => {
-    setAppData((prevData) => {
-      const newTransactions = [...prevData.transactions];
-      newTransactions.splice(index, 1);
-      const newData = {
-        ...prevData,
-        transactions: newTransactions,
-      };
-      saveDataLocally(newData);
-      return newData;
-    });
-  }, [saveDataLocally]);
+    setAppData(prev => ({
+      ...prev,
+      transactions: [...prev.transactions, newTransaction],
+    }));
+  };
 
-  const updateSettings = useCallback((income: number, username: string) => {
-    setAppData((prevData) => {
-      const newDailyBudget = calculateDailyBudget(income, prevData.expenses);
-      const newData = {
-        ...prevData,
-        income,
-        username,
-        dailyBudget: newDailyBudget,
-      };
-      saveDataLocally(newData);
-      return newData;
-    });
-  }, [calculateDailyBudget, saveDataLocally]);
+  const removeTransaction = (index: number) => {
+    setAppData(prev => ({
+      ...prev,
+      transactions: prev.transactions.filter((_, i) => i !== index),
+    }));
+  };
 
-  const handleAddTransaction = useCallback((amount: number) => {
+  const addExpense = (expense: Expense) => {
+    setAppData(prev => ({
+      ...prev,
+      expenses: [...prev.expenses, expense],
+    }));
+  };
+
+  const removeExpense = (index: number) => {
+    setAppData(prev => ({
+      ...prev,
+      expenses: prev.expenses.filter((_, i) => i !== index),
+    }));
+  };
+
+  const updateSettings = (income: number, dailyBudget: number, username: string) => {
+    setAppData(prev => ({
+      ...prev,
+      income,
+      dailyBudget,
+      username,
+    }));
+  };
+
+  const handleAddTransaction = (amount: number) => {
     addTransaction(amount);
-  }, [addTransaction]);
+    setShowAddTransaction(false);
+  };
 
   return (
-    <Router>
-      <div className="app-container">
-        <div className="app-content">
-          <Routes>
-            <Route path="/" element={<HomeScreen />} />
-            <Route path="/stats" element={<ExpensesScreen expenses={appData.expenses} income={appData.income} addExpense={addExpense} removeExpense={removeExpense} />} />
-            <Route path="/settings" element={<SettingsScreen income={appData.income} dailyBudget={appData.dailyBudget} updateSettings={updateSettings} totalExpenses={appData.expenses.reduce((sum, exp) => sum + exp.amount, 0)} username={appData.username} />} />
-          </Routes>
-        </div>
-        <nav className="app-nav">
-          <div className="max-w-md mx-auto px-4">
-            <div className="flex justify-between items-center h-16">
-              <button
-                onClick={() => setActiveScreen('expenses')}
-                className={`nav-item ${activeScreen === 'expenses' ? 'active' : ''}`}
-              >
-                <DollarSign className="w-6 h-6" />
-                <span className="text-xs mt-1">Expenses</span>
-              </button>
+    <div className="app-container">
+      <div className="app-content">
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <HomeScreen
+                dailyBudget={appData.dailyBudget}
+                transactions={appData.transactions}
+                addTransaction={addTransaction}
+                removeTransaction={removeTransaction}
+                username={appData.username}
+                currentDate={virtualDate}
+                setCurrentDate={setVirtualDate}
+                onAddTransaction={() => setShowAddTransaction(true)}
+              />
+            }
+          />
+          <Route
+            path="/expenses"
+            element={
+              <ExpensesScreen
+                expenses={appData.expenses}
+                income={appData.income}
+                addExpense={addExpense}
+                removeExpense={removeExpense}
+              />
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <SettingsScreen
+                income={appData.income}
+                dailyBudget={appData.dailyBudget}
+                updateSettings={updateSettings}
+                totalExpenses={appData.expenses.reduce((sum, exp) => sum + exp.amount, 0)}
+                username={appData.username}
+              />
+            }
+          />
+        </Routes>
+      </div>
 
-              {activeScreen === 'home' ? (
-                <button
-                  onClick={() => setShowAddTransaction(true)}
-                  className="nav-item-center"
-                >
-                  <div className="nav-item-center-button">
-                    <Plus className="w-6 h-6 text-white" />
-                  </div>
-                </button>
+      <nav className="app-nav">
+        <div className="nav-container">
+          <div className="nav-items">
+            <button
+              onClick={() => navigate('/expenses')}
+              className="nav-item"
+            >
+              <DollarSign className="w-6 h-6" />
+              <span className="text-xs mt-1">Expenses</span>
+            </button>
+
+            <button
+              onClick={() => {
+                if (location.pathname === '/') {
+                  setShowAddTransaction(true);
+                } else {
+                  navigate('/');
+                }
+              }}
+              className={location.pathname === '/' ? 'nav-item-center' : 'nav-item'}
+            >
+              {location.pathname === '/' ? (
+                <div className="nav-item-center-button">
+                  <Plus className="w-6 h-6 text-white" />
+                </div>
               ) : (
-                <button
-                  onClick={() => setActiveScreen('home')}
-                  className={`nav-item ${activeScreen === 'home' ? 'active' : ''}`}
-                >
+                <>
                   <Home className="w-6 h-6" />
                   <span className="text-xs mt-1">Home</span>
-                </button>
+                </>
               )}
+            </button>
 
-              <button
-                onClick={() => setActiveScreen('settings')}
-                className={`nav-item ${activeScreen === 'settings' ? 'active' : ''}`}
-              >
-                <User className="w-6 h-6" />
-                <span className="text-xs mt-1">Profile</span>
-              </button>
-            </div>
+            <button
+              onClick={() => navigate('/settings')}
+              className="nav-item"
+            >
+              <User className="w-6 h-6" />
+              <span className="text-xs mt-1">Profile</span>
+            </button>
           </div>
-        </nav>
+        </div>
+      </nav>
 
-        {showAddTransaction && (
-          <MoneyInput
-            onClose={() => setShowAddTransaction(false)}
-            onSubmit={handleAddTransaction}
-          />
-        )}
-      </div>
+      {showAddTransaction && (
+        <MoneyInput
+          onClose={() => setShowAddTransaction(false)}
+          onSubmit={handleAddTransaction}
+        />
+      )}
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <AppContent />
     </Router>
   );
 }

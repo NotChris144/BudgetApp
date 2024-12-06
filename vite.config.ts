@@ -7,10 +7,14 @@ export default defineConfig({
   base: './',
   build: {
     assetsDir: 'assets',
+    outDir: 'dist',
     sourcemap: true,
     rollupOptions: {
       output: {
-        manualChunks: undefined
+        manualChunks: {
+          vendor: ['react', 'react-dom', 'react-router-dom'],
+          ui: ['lucide-react', 'framer-motion'],
+        }
       }
     }
   },
@@ -61,5 +65,13 @@ export default defineConfig({
         ]
       }
     })
-  ]
+  ],
+  resolve: {
+    alias: {
+      '@': '/src'
+    }
+  },
+  optimizeDeps: {
+    include: ['react-router-dom']
+  }
 })

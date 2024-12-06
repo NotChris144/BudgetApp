@@ -34,15 +34,17 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({
     const value = e.target.value;
     if (value === '' || /^\d+(\.\d*)?$/.test(value)) {
       setNewIncome(value);
-      const parsedIncome = parseFloat(value) || 0;
-      updateSettings(parsedIncome, newUsername);
     }
   };
 
   const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setNewUsername(value);
-    updateSettings(parseFloat(newIncome) || 0, value);
+  };
+
+  const handleBlur = () => {
+    const parsedIncome = parseFloat(newIncome) || 0;
+    updateSettings(parsedIncome, newUsername);
   };
 
   const parsedIncome = parseFloat(newIncome) || 0;
@@ -63,6 +65,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({
             id="username"
             value={newUsername}
             onChange={handleUsernameChange}
+            onBlur={handleBlur}
             className="mt-1 block w-full p-2 border rounded-md bg-gray-700 text-white"
             placeholder="Enter your name"
           />
@@ -76,6 +79,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({
             id="income"
             value={newIncome}
             onChange={handleIncomeChange}
+            onBlur={handleBlur}
             className="mt-1 block w-full p-2 border rounded-md bg-gray-700 text-white"
             placeholder="Enter your monthly income"
           />

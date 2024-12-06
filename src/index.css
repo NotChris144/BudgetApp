@@ -11,14 +11,19 @@
   html, body {
     @apply h-full;
     -webkit-tap-highlight-color: transparent;
+    overscroll-behavior: none;
   }
 
   body {
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     @apply bg-gray-950 text-gray-100 antialiased;
     height: 100vh;
-    overflow-y: auto;
-    overflow-x: hidden;
+    height: 100dvh;
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    left: 0;
+    top: 0;
   }
 
   input[type="number"]::-webkit-inner-spin-button,
@@ -31,9 +36,10 @@
 @layer components {
   .app-container {
     @apply flex flex-col;
-    min-height: 100vh;
-    padding-bottom: calc(4.5rem + var(--safe-area-inset-bottom));
+    height: 100vh;
+    height: 100dvh;
     position: relative;
+    overflow: hidden;
   }
 
   .app-content {
@@ -41,6 +47,7 @@
     padding-top: max(1rem, var(--safe-area-inset-top));
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
   }
 
   .app-nav {
@@ -122,6 +129,10 @@
 
   .welcome-section {
     @apply pt-4 pb-6;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-right: 1rem;
   }
 
   .budget-section {

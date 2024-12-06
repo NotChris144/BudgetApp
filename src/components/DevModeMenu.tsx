@@ -28,9 +28,10 @@ const DevModeMenu: React.FC<DevModeMenuProps> = ({
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed top-4 right-4 bg-gray-800 text-white p-2 rounded-full shadow-lg z-50"
+        className="bg-gray-800 text-white p-2 rounded-full shadow-lg inline-block"
+        aria-label="Open Developer Menu"
       >
-        <Settings className="w-6 h-6" />
+        <Settings className="w-5 h-5" />
       </button>
       {isOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -51,26 +52,24 @@ const DevModeMenu: React.FC<DevModeMenuProps> = ({
                   id="virtualDate"
                   value={currentDate.toISOString().split('T')[0]}
                   onChange={handleDateChange}
-                  className="w-full p-2 bg-gray-700 rounded-md text-white"
+                  className="w-full bg-gray-700 text-white px-3 py-2 rounded-lg"
                 />
               </div>
               <div>
                 <h4 className="text-sm font-medium text-gray-300 mb-2">Recent Transactions</h4>
-                <ul className="space-y-2 max-h-60 overflow-y-auto">
-                  {transactions.slice().reverse().map((transaction, index) => (
-                    <li key={index} className="flex justify-between items-center bg-gray-700 p-2 rounded-md">
-                      <span className="text-white">
-                        {new Date(transaction.date).toLocaleDateString()} - £{transaction.amount.toFixed(2)}
-                      </span>
+                <div className="space-y-2">
+                  {transactions.slice(-5).map((transaction, index) => (
+                    <div key={index} className="flex justify-between items-center bg-gray-700 p-2 rounded">
+                      <span className="text-white">£{transaction.amount.toFixed(2)}</span>
                       <button
-                        onClick={() => removeTransaction(transactions.length - 1 - index)}
+                        onClick={() => removeTransaction(transactions.length - 5 + index)}
                         className="text-red-400 hover:text-red-300"
                       >
-                        Remove
+                        <X className="w-4 h-4" />
                       </button>
-                    </li>
+                    </div>
                   ))}
-                </ul>
+                </div>
               </div>
             </div>
           </div>

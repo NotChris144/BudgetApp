@@ -68,12 +68,17 @@ function AppContent() {
     }));
   };
 
-  const updateSettings = (income: number, dailyBudget: number, username: string) => {
+  const updateSettings = (income: number, username: string) => {
+    // Calculate daily budget (with 20% buffer)
+    const totalExpenses = appData.expenses.reduce((sum, expense) => sum + expense.amount, 0);
+    const availableAmount = income - totalExpenses;
+    const dailyBudget = (availableAmount * 0.8) / 30;
+
     setAppData(prev => ({
       ...prev,
       income,
-      dailyBudget,
       username,
+      dailyBudget: Math.max(0, dailyBudget),
     }));
   };
 
@@ -119,7 +124,7 @@ function AppContent() {
                 income={appData.income}
                 dailyBudget={appData.dailyBudget}
                 updateSettings={updateSettings}
-                totalExpenses={appData.expenses.reduce((sum, exp) => sum + exp.amount, 0)}
+                totalExpenses={appData.expenses.reduce((sum, expense) => sum + expense.amount, 0)}
                 username={appData.username}
               />
             }

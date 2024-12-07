@@ -93,25 +93,36 @@ const WeeklySummaryPanel: React.FC<WeeklySummaryPanelProps> = ({ weeks }) => {
             <div className="divide-y divide-gray-700/30">
               {weeks[currentWeek].summary.map((day, index) => {
                 const hasTransactions = day.spent > 0;
+                const remaining = day.remainingToday;
+                const isPositive = remaining >= 0;
                 
                 return (
                   <div 
                     key={`${day.date}-${index}`}
-                    className={`grid grid-cols-3 px-6 py-4 text-sm ${
+                    className={`grid grid-cols-4 px-6 py-4 text-sm ${
                       day.isToday ? 'bg-purple-500/10' : ''
                     }`}
                   >
-                    <div className="font-medium text-gray-300">
-                      {day.day}
-                      {day.isToday && (
-                        <span className="text-xs text-purple-400 ml-2">Today</span>
-                      )}
+                    {/* Day */}
+                    <div className="flex items-center gap-2">
+                      <span className={day.isToday ? 'text-purple-400 font-medium' : 'text-gray-400'}>
+                        {day.day}
+                      </span>
                     </div>
-                    <div className="text-center text-gray-300">
-                      {hasTransactions ? formatCurrency(day.spent) : '-'}
+
+                    {/* Budget */}
+                    <div className="text-gray-300">
+                      {formatCurrency(day.adjustedBudget)}
                     </div>
-                    <div className={`text-right ${day.remainingToday >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
-                      {hasTransactions ? (day.remainingToday >= 0 ? '+' : '') + formatCurrency(day.remainingToday) : '-'}
+
+                    {/* Spent */}
+                    <div className={hasTransactions ? 'text-red-400' : 'text-gray-500'}>
+                      {hasTransactions ? `-${formatCurrency(day.spent)}` : '—'}
+                    </div>
+
+                    {/* Remaining */}
+                    <div className={`text-right ${isPositive ? 'text-emerald-400' : 'text-red-400'}`}>
+                      {hasTransactions ? formatCurrency(remaining) : '—'}
                     </div>
                   </div>
                 );

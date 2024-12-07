@@ -36,6 +36,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
   const todaysSummary = weeks[0]?.summary.find(day => day.isToday);
   const todaysBudget = todaysSummary?.adjustedBudget ?? baseDailyBudget;
   const todaysSpent = todaysSummary?.spent ?? 0;
+  const todaysRemaining = todaysSummary?.remainingToday ?? baseDailyBudget;
   const budgetDifference = todaysBudget - baseDailyBudget;
 
   const displayBudget = isNaN(todaysBudget) || todaysBudget === 0 ? baseDailyBudget : todaysBudget;
@@ -65,11 +66,16 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
             </div>
           )}
         </div>
-        {todaysSpent > 0 && (
-          <div className="mt-2 text-sm text-gray-400">
-            Spent today: <span className="text-red-400">{formatCurrency(todaysSpent)}</span>
+        <div className="mt-2 text-sm text-gray-400">
+          {todaysSpent > 0 && (
+            <div className="text-red-400">
+              Spent today: {formatCurrency(todaysSpent)}
+            </div>
+          )}
+          <div className={`mt-1 ${todaysRemaining >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+            Remaining today: {formatCurrency(todaysRemaining)}
           </div>
-        )}
+        </div>
       </div>
 
       <div className="summary-section">

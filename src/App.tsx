@@ -82,11 +82,6 @@ function AppContent() {
     }));
   };
 
-  const handleAddTransaction = (amount: number) => {
-    addTransaction(amount);
-    setShowAddTransaction(false);
-  };
-
   return (
     <div className="mobile-container">
       <div className="page-content">
@@ -97,7 +92,7 @@ function AppContent() {
               <HomeScreen
                 dailyBudget={appData.dailyBudget}
                 transactions={appData.transactions}
-                addTransaction={addTransaction}
+                addTransaction={(amount: number) => addTransaction(amount)}
                 removeTransaction={removeTransaction}
                 username={appData.username}
                 currentDate={virtualDate}
@@ -178,7 +173,10 @@ function AppContent() {
         <div className="modal-wrapper">
           <MoneyInput
             onClose={() => setShowAddTransaction(false)}
-            onSubmit={handleAddTransaction}
+            onSubmit={amount => {
+              addTransaction(amount);
+              setShowAddTransaction(false);
+            }}
           />
         </div>
       )}

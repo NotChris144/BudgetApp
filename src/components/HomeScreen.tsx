@@ -10,7 +10,7 @@ import { formatCurrency } from '../utils/formatters';
 interface HomeScreenProps {
   dailyBudget: number;
   transactions: Transaction[];
-  addTransaction: (transaction: Transaction) => void;
+  addTransaction: (amount: number) => void;
   removeTransaction: (index: number) => void;
   username?: string;
   currentDate: Date;
